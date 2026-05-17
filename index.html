@@ -35,7 +35,7 @@ body {
 
 header {
   background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  border-bottom: none;
   padding: 15px 32px;
   display: flex;
   align-items: center;
@@ -43,7 +43,6 @@ header {
   position: sticky;
   top: 0;
   z-index: 10;
-  height: 52px;
 }
 .logo { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); letter-spacing: 0.06em; }
 .logo span { color: var(--text); font-weight: 500; }
@@ -59,7 +58,7 @@ main {
 aside {
   background: var(--surface);
   border-right: 1px solid var(--border);
-  padding: 0 12px 20px 12px;
+  padding: 20px 12px;
   position: sticky;
   top: 52px;
   height: calc(100vh - 52px);
@@ -295,7 +294,7 @@ aside {
       <div class="postit-desc" style="color:var(--muted)">단어 연상으로 전혀 다른 내용 제시</div>
     </div>
   </div>
-  <div style="margin-top:auto;padding-top:20px;padding:20px 8px 0">
+  <div style="margin-top:auto;padding:20px 8px 0">
     <a href="test.html" style="display:block;width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;font-size:12px;text-decoration:none;text-align:center;transition:all 0.12s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='rgba(255,255,255,0.15)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">Test 별 문제 →</a>
   </div>
 </aside>
