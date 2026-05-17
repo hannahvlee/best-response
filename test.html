@@ -15,11 +15,11 @@
   --right-bg: rgba(76,175,130,0.12); --right-border: rgba(76,175,130,0.4);
 }
 body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
-header { background: var(--surface); padding: 15px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+header { background: var(--surface); border-bottom: none; padding: 15px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
 .logo { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); letter-spacing: 0.06em; cursor: pointer; }
 .logo span { color: var(--text); font-weight: 500; }
-main { display: grid; grid-template-columns: 230px 1fr; flex: 1; min-height: calc(100vh - 52px); }
-aside { background: var(--surface); border-right: 1px solid var(--border); padding: 20px 12px; position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto; display: flex; flex-direction: column; }
+main { display: grid; grid-template-columns: 230px 1fr; flex: 1; min-height: calc(100vh - 58px); }
+aside { background: var(--surface); border-right: 1px solid var(--border); padding: 20px 12px; position: sticky; top: 58px; height: calc(100vh - 58px); overflow-y: auto; display: flex; flex-direction: column; }
 .nav-label { font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 0 8px; margin-bottom: 6px; }
 .nav-btn { display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; border-radius: 7px; border: none; background: transparent; color: var(--muted); font-family: inherit; font-size: 13px; cursor: pointer; text-align: left; transition: all 0.12s; margin-bottom: 2px; }
 .nav-btn:hover { background: var(--surface2); color: var(--text); }
@@ -54,13 +54,32 @@ aside { background: var(--surface); border-right: 1px solid var(--border); paddi
 .choice-note { font-size: 12px; color: var(--muted); margin-top: 3px; opacity: 0.8; }
 .choice-row.is-correct .choice-note { color: var(--muted); opacity: 1; }
 .pattern-tag { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 4px; flex-shrink: 0; white-space: nowrap; }
-.q-divider { height: 1px; background: var(--border); margin: 24px 0; }
+.choice-row.hidden-choice { opacity: 0; pointer-events: none; }
+.study-mode .choice-note { display: none; }
+.study-mode .pattern-tag { display: none; }
+.study-mode .choice-row { cursor: pointer; opacity: 0.35; transition: opacity 0.15s; }
+.study-mode .choice-row:hover { opacity: 0.6; }
+.study-mode .choice-row.revealed { opacity: 1; cursor: default; }
+.study-mode .choice-row.revealed.is-correct { background: var(--right-bg); border: 1px solid var(--right-border); color: var(--text); }
+.study-mode .choice-row.revealed.is-correct .choice-note { display: block; color: #4ade80; }
+.study-mode .choice-row.revealed.is-correct .choice-idx { color: #4ade80; }
+.study-mode .choice-row.revealed.is-wrong { opacity: 1; color: var(--muted); background: rgba(224,92,92,0.07); border-radius: 8px; }
+.study-mode .choice-row.revealed.is-wrong .choice-note { display: block; }
+.study-mode .choice-row.revealed.is-wrong .pattern-tag { display: inline-block; }
+.study-mode .choice-row.revealed .pattern-name-label { display: inline; font-size: 11px; color: var(--muted); margin-left: 2px; }
+.pattern-name-label { display: none; }
+.mode-toggle { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.mode-btn { padding: 5px 12px; border-radius: 100px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-family: inherit; font-size: 12px; cursor: pointer; transition: all 0.12s; }
+.mode-btn.active { background: var(--surface2); color: var(--text); border-color: rgba(255,255,255,0.2); }
 </style>
 </head>
 <body>
 <header>
   <div class="logo" onclick="window.location.href='index.html'">TOEFL · <span>Best Response</span></div>
-  <div style="font-size:12px;color:var(--muted)">Test별 문제</div>
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="btn-class" onclick="setMode('class')">수업용</button>
+    <button class="mode-btn" id="btn-study" onclick="setMode('study')">자습용</button>
+  </div>
 </header>
 <main>
 <aside>
@@ -533,12 +552,55 @@ aside { background: var(--surface); border-right: 1px solid var(--border); paddi
 </main>
 <script>
 const navBtns = document.querySelectorAll('.nav-btn');
+let currentMode = 'class';
+
 function goTo(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   navBtns.forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
   btn.classList.add('active');
   window.scrollTo(0, 0);
+  if (currentMode === 'study') resetStudyMode();
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  const content = document.querySelector('.content');
+  document.getElementById('btn-class').classList.toggle('active', mode === 'class');
+  document.getElementById('btn-study').classList.toggle('active', mode === 'study');
+  if (mode === 'study') {
+    content.classList.add('study-mode');
+    resetStudyMode();
+    attachStudyClicks();
+  } else {
+    content.classList.remove('study-mode');
+    document.querySelectorAll('.choice-row').forEach(r => r.classList.remove('revealed'));
+  }
+}
+
+function resetStudyMode() {
+  document.querySelectorAll('.choice-row').forEach(r => r.classList.remove('revealed'));
+}
+
+function attachStudyClicks() {
+  const patternNames = { A: 'WH 정보 혼동', B: '키워드 재사용', C: '주어·역할 혼동', D: '시제·상황 어긋남', E: '연상 유도 무관' };
+  document.querySelectorAll('.choice-row').forEach(row => {
+    row.onclick = function() {
+      if (currentMode !== 'study') return;
+      if (row.classList.contains('revealed')) return;
+      row.classList.add('revealed');
+      const tag = row.querySelector('.pattern-tag');
+      if (tag) {
+        const letter = tag.textContent.trim();
+        if (patternNames[letter] && !row.querySelector('.pattern-name-label')) {
+          const label = document.createElement('span');
+          label.className = 'pattern-name-label';
+          label.textContent = patternNames[letter];
+          tag.insertAdjacentElement('afterend', label);
+        }
+      }
+    };
+  });
 }
 </script>
 </body>
