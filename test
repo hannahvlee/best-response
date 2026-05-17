@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOEFL Best Response — Test</title>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a;
+  --border: rgba(255,255,255,0.08); --text: #e8eaf0; --muted: #7a7f96;
+  --A: #378ADD; --B: #1D9E75; --C: #f55f8a; --D: #EF9F27; --E: #9b59f5;
+  --T1: #0C447C; --T2: #0F6E56; --T3: #993556; --T4: #854F0B; --T5: #5F5E5A;
+  --right-bg: rgba(76,175,130,0.12); --right-border: rgba(76,175,130,0.4);
+}
+body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+header { background: var(--surface); padding: 15px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+.logo { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); letter-spacing: 0.06em; cursor: pointer; }
+.logo span { color: var(--text); font-weight: 500; }
+main { display: grid; grid-template-columns: 230px 1fr; flex: 1; min-height: calc(100vh - 52px); }
+aside { background: var(--surface); border-right: 1px solid var(--border); padding: 20px 12px; position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto; display: flex; flex-direction: column; }
+.nav-label { font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 0 8px; margin-bottom: 6px; }
+.nav-btn { display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; border-radius: 7px; border: none; background: transparent; color: var(--muted); font-family: inherit; font-size: 13px; cursor: pointer; text-align: left; transition: all 0.12s; margin-bottom: 2px; }
+.nav-btn:hover { background: var(--surface2); color: var(--text); }
+.nav-btn.active { background: var(--surface2); color: var(--text); font-weight: 500; }
+.sidebar-divider { height: 1px; background: var(--border); margin: 14px 0; }
+.postit-label { font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 0 8px; margin-bottom: 8px; }
+.postit-stack { display: flex; flex-direction: column; gap: 5px; }
+.postit { border-radius: 6px; padding: 8px 10px; }
+.postit-top { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+.postit-letter { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; }
+.postit-name { font-size: 12px; font-weight: 500; }
+.postit-desc { font-size: 11px; line-height: 1.4; color: var(--muted); }
+.content { padding: 40px 48px; max-width: 800px; }
+.page { display: none; }
+.page.active { display: block; }
+.test-eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.test-title { font-size: 22px; font-weight: 600; margin-bottom: 32px; }
+.q-block { margin-bottom: 24px; }
+.q-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.q-num-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+.q-type-tag { font-size: 11px; font-weight: 500; padding: 2px 9px; border-radius: 100px; }
+.q-sentence { font-size: 16px; font-weight: 500; line-height: 1.5; padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; }
+.choices { display: flex; flex-direction: column; gap: 7px; }
+.choice-row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 14px; border-radius: 8px; font-size: 14px; line-height: 1.5; }
+.choice-row.is-correct { background: var(--right-bg); border: 1px solid var(--right-border); }
+.choice-row.is-wrong { color: var(--muted); }
+.choice-idx { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); flex-shrink: 0; padding-top: 1px; min-width: 18px; }
+.choice-row.is-correct .choice-idx { color: #4ade80; }
+.choice-main { flex: 1; }
+.choice-text-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.choice-text { flex: 1; }
+.choice-note { font-size: 12px; color: var(--muted); margin-top: 3px; opacity: 0.8; }
+.choice-row.is-correct .choice-note { color: #4ade80; opacity: 1; }
+.pattern-tag { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 4px; flex-shrink: 0; white-space: nowrap; }
+.q-divider { height: 1px; background: var(--border); margin: 24px 0; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" onclick="window.location.href='index.html'">TOEFL · <span>Best Response</span></div>
+  <div style="font-size:12px;color:var(--muted)">Test별 문제</div>
+</header>
+<main>
+<aside>
+  <div class="nav-label">Test</div>
+  <button class="nav-btn active" onclick="goTo('t9',this)">Test 9</button>
+  <button class="nav-btn" onclick="goTo('t10',this)">Test 10</button>
+  <div class="sidebar-divider"></div>
+  <div class="postit-label">질문 유형</div>
+  <div class="postit-stack">
+    <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--T1)">①</span><span class="postit-name" style="color:var(--T1)">정보 요청형</span></div><div class="postit-desc">When / Where / Who / Why / How 등으로 사실 정보를 묻는 질문</div></div>
+    <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--T2)">②</span><span class="postit-name" style="color:var(--T2)">제안·요청·초대형</span></div><div class="postit-desc">Would you like, Can you, Let's 등 상대방의 행동을 유도하는 질문</div></div>
+    <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--T3)">③</span><span class="postit-name" style="color:var(--T3)">의견·선호형</span></div><div class="postit-desc">Do you prefer, What's your favorite 등 개인 견해나 선호를 묻는 질문</div></div>
+    <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--T4)">④</span><span class="postit-name" style="color:var(--T4)">경험·근황형</span></div><div class="postit-desc">How did it go, Did you enjoy 등 겪은 일이나 근황을 묻는 질문</div></div>
+    <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--T5)">⑤</span><span class="postit-name" style="color:var(--T5)">상황 전달·반응형</span></div><div class="postit-desc">평서문으로 상황을 전달하거나 가볍게 던지는 발화에 반응하는 유형</div></div>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="postit-label">오답 패턴</div>
+  <div class="postit-stack">
+    <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--A)">A</span><span class="postit-name" style="color:var(--A)">WH 정보 혼동</span></div><div class="postit-desc">When→Where, Where→How long 등 정보 유형 교체</div></div>
+    <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--B)">B</span><span class="postit-name" style="color:var(--B)">키워드 재사용</span></div><div class="postit-desc">질문의 핵심 단어를 오답에 그대로 삽입</div></div>
+    <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--C)">C</span><span class="postit-name" style="color:var(--C)">주어·역할 혼동</span></div><div class="postit-desc">요청자 ↔ 수행자 역할 교체</div></div>
+    <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--D)">D</span><span class="postit-name" style="color:var(--D)">시제·상황 어긋남</span></div><div class="postit-desc">과거 질문에 미래형, 끝난 일을 앞으로</div></div>
+    <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--E)">E</span><span class="postit-name" style="color:var(--E)">연상 유도 무관</span></div><div class="postit-desc">단어 연상으로 전혀 다른 내용 제시</div></div>
+  </div>
+</aside>
+
+<div class="content">
+
+<div id="page-t9" class="page active">
+  <div class="test-eyebrow">Best Response</div>
+  <div class="test-title">Test 9</div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q63</span><span class="q-type-tag" style="background:rgba(153,53,86,0.15);color:var(--T3)">③ 의견·선호형</span></div>
+    <div class="q-sentence">What shall we order?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Sure, I'm hungry.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The restaurant is open.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">order → restaurant 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Every weekend afternoon.</span><span class="pattern-tag" style="background:rgba(55,138,221,0.15);color:var(--A)">A</span></div><div class="choice-note">What 물었는데 When으로 답변</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I don't have a preference.</span></div><div class="choice-note">정답</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q64</span><span class="q-type-tag" style="background:rgba(12,68,124,0.15);color:var(--T1)">① 정보 요청형</span></div>
+    <div class="q-sentence">How long is your commute to work?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I drive to work.</span><span class="pattern-tag" style="background:rgba(55,138,221,0.15);color:var(--A)">A</span></div><div class="choice-note">How long 물었는데 How로 답변</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">A few minutes.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Commuting is tiring.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"commute" 재사용 — 시간 대신 감상 서술</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The train arrives soon.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">commute → 기차 연상 유도</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q65</span><span class="q-type-tag" style="background:rgba(153,53,86,0.15);color:var(--T3)">③ 의견·선호형</span></div>
+    <div class="q-sentence">What is your favorite beverage?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The café has lots of drink options.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">beverage → café 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Beverages are refreshing.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"beverage" 재사용 — 선호 없이 일반 서술</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">There's some milk in the cooler.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">beverage → 음료 → 우유 연상 유도</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Coffee.</span></div><div class="choice-note">정답</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q66</span><span class="q-type-tag" style="background:rgba(133,79,11,0.15);color:var(--T4)">④ 경험·근황형</span></div>
+    <div class="q-sentence">What in the world did I do with my keys?</div>
+    <div class="choices">
+      <div class="choice-row is-correct"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">See if they're in the door.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Don't forget to lock up when you go.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">keys → 잠금 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I can lend you a few if you pay me back tomorrow.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">keys → money 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Which one of these is the car key?</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"key" 재사용하며 맥락 바꿈</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q67</span><span class="q-type-tag" style="background:rgba(12,68,124,0.15);color:var(--T1)">① 정보 요청형</span></div>
+    <div class="q-sentence">Will the meeting be rescheduled soon?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">That's soon enough.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"soon" 재사용 — 맥락 전혀 다름</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Meetings are often rescheduled.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"meeting", "rescheduled" 둘 다 재사용</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">It's still being discussed.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The room number also changed.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">meeting room 연상 유도</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q68</span><span class="q-type-tag" style="background:rgba(12,68,124,0.15);color:var(--T1)">① 정보 요청형</span></div>
+    <div class="q-sentence">When are the auditions for the play?</div>
+    <div class="choices">
+      <div class="choice-row is-correct"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">We haven't heard yet.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The park closes at six o'clock.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">play → park 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Carina won first place.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">audition → 수상 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">A pile of scripts.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">play → scripts 연상 유도</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q69</span><span class="q-type-tag" style="background:rgba(15,110,86,0.15);color:var(--T2)">② 제안·요청·초대형</span></div>
+    <div class="q-sentence">Could you check my work?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The microwave isn't working.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"work" 재사용 — 전혀 다른 의미</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Give me a second.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I'll take your word for it.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"word" 재사용 — check와 무관한 맥락</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The interview went well.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">work → interview 연상 유도</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q70</span><span class="q-type-tag" style="background:rgba(12,68,124,0.15);color:var(--T1)">① 정보 요청형</span></div>
+    <div class="q-sentence">When is Sharon planning to retire?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">She likes to have her lunch outside.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Sometime next year.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I have an appointment at 3 o'clock.</span><span class="pattern-tag" style="background:rgba(245,95,138,0.15);color:var(--C)">C</span></div><div class="choice-note">Sharon 일정 물었는데 나의 일정으로 — 주어 혼동</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">There are gatherings every Monday.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">retire → 모임 연상 유도</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q71</span><span class="q-type-tag" style="background:rgba(153,53,86,0.15);color:var(--T3)">③ 의견·선호형</span></div>
+    <div class="q-sentence">What can I bring to the picnic?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Around noon.</span><span class="pattern-tag" style="background:rgba(55,138,221,0.15);color:var(--A)">A</span></div><div class="choice-note">What 물었는데 When으로 답변</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">It should be nice weather.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">picnic → 날씨 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">We're meeting at the park.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">picnic → 공원 연상 유도</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">No one's bringing desserts.</span></div><div class="choice-note">정답</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q72</span><span class="q-type-tag" style="background:rgba(95,94,90,0.15);color:var(--T5)">⑤ 상황 전달·반응형</span></div>
+    <div class="q-sentence">The conference starts at 7 a.m.</div>
+    <div class="choices">
+      <div class="choice-row is-correct"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">That seems early.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The weather is great.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Yes, in the evening.</span><span class="pattern-tag" style="background:rgba(239,159,39,0.15);color:var(--D)">D</span></div><div class="choice-note">7 a.m.인데 evening이라고 — 상황 어긋남</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Yes, I saw her yesterday.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q73</span><span class="q-type-tag" style="background:rgba(153,53,86,0.15);color:var(--T3)">③ 의견·선호형</span></div>
+    <div class="q-sentence">What's your favorite season?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I don't like spicy food.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I can't wait to go on vacation.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">season → 휴가 연상 유도</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I love the fall colors.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Budget season is hectic.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"season" 재사용 — 전혀 다른 의미</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q74</span><span class="q-type-tag" style="background:rgba(95,94,90,0.15);color:var(--T5)">⑤ 상황 전달·반응형</span></div>
+    <div class="q-sentence">It's quite chilly today, isn't it?</div>
+    <div class="choices">
+      <div class="choice-row is-correct"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">You need a warmer coat.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I like iced coffee.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">chilly → iced 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The game last night was great.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Her latest result was quite an improvement!</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"quite" 재사용 — 다른 맥락</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q75</span><span class="q-type-tag" style="background:rgba(133,79,11,0.15);color:var(--T4)">④ 경험·근황형</span></div>
+    <div class="q-sentence">How was the writer's talk?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">That's her fifth novel.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">writer → novel 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">She has an engaging writing style.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">writer → writing style 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I had the same reaction.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">경험 공유처럼 보이지만 맥락 없음</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Oh, I wasn't able to make it.</span></div><div class="choice-note">정답</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q76</span><span class="q-type-tag" style="background:rgba(95,94,90,0.15);color:var(--T5)">⑤ 상황 전달·반응형</span></div>
+    <div class="q-sentence">Will needs someone to fill in for Massimo while he's sick.</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Thanks, I can use the time off.</span><span class="pattern-tag" style="background:rgba(245,95,138,0.15);color:var(--C)">C</span></div><div class="choice-note">대신 일해야 하는데 휴가로 반응 — 역할 혼동</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Please fill in the missing details on the report.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"fill in" 재사용 — 전혀 다른 의미</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I may be available on the weekend.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I'll ask Massimo if he can drop by tomorrow.</span><span class="pattern-tag" style="background:rgba(245,95,138,0.15);color:var(--C)">C</span></div><div class="choice-note">아픈 Massimo에게 부탁 — 인물 역할 혼동</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q77</span><span class="q-type-tag" style="background:rgba(95,94,90,0.15);color:var(--T5)">⑤ 상황 전달·반응형</span></div>
+    <div class="q-sentence">I would have thought Tom would be here by now.</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">A box of books.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I'll call him.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Where can I park?</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Many different ways.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q78</span><span class="q-type-tag" style="background:rgba(12,68,124,0.15);color:var(--T1)">① 정보 요청형</span></div>
+    <div class="q-sentence">Will you be joining the marketing team meeting tomorrow?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I met the clients for lunch.</span><span class="pattern-tag" style="background:rgba(239,159,39,0.15);color:var(--D)">D</span></div><div class="choice-note">내일 미팅 물었는데 과거 일정 — 시제 어긋남</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Let me know when you have a moment.</span><span class="pattern-tag" style="background:rgba(245,95,138,0.15);color:var(--C)">C</span></div><div class="choice-note">참석 여부 물었는데 상대방에게 역으로 요청 — 역할 혼동</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Wasn't it moved to Friday?</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The big conference room is available.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">meeting → conference room 연상 유도</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q79</span><span class="q-type-tag" style="background:rgba(15,110,86,0.15);color:var(--T2)">② 제안·요청·초대형</span></div>
+    <div class="q-sentence">Can you join us for a quick meeting in 10 minutes?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">That's her fifth novel.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">No, today would be better.</span><span class="pattern-tag" style="background:rgba(239,159,39,0.15);color:var(--D)">D</span></div><div class="choice-note">10분 후 미팅인데 오늘이 낫다고 — 상황 어긋남</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Yes, that works for me.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I'll need to see it first.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q80</span><span class="q-type-tag" style="background:rgba(133,79,11,0.15);color:var(--T4)">④ 경험·근황형</span></div>
+    <div class="q-sentence">Did you enjoy the concert?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I did listen to the album.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">concert → album 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">That's what they told me.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Well, my favorite band played.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Sure, I can go on Friday evening.</span><span class="pattern-tag" style="background:rgba(239,159,39,0.15);color:var(--D)">D</span></div><div class="choice-note">끝난 콘서트인데 앞으로 가겠다고 — 시제 어긋남</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div id="page-t10" class="page">
+  <div class="test-eyebrow">Best Response</div>
+  <div class="test-title">Test 10</div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q81</span><span class="q-type-tag" style="background:rgba(95,94,90,0.15);color:var(--T5)">⑤ 상황 전달·반응형</span></div>
+    <div class="q-sentence">Are you cooking dinner tonight?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The cinema is closed.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">You can call him back later.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Let's get food delivered.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Twice yesterday, I think.</span><span class="pattern-tag" style="background:rgba(239,159,39,0.15);color:var(--D)">D</span></div><div class="choice-note">오늘 저녁 물었는데 어제 일로 — 시제 어긋남</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q82</span><span class="q-type-tag" style="background:rgba(133,79,11,0.15);color:var(--T4)">④ 경험·근황형</span></div>
+    <div class="q-sentence">How do you celebrate your birthday?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">It explains how to bake a cake.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">birthday → cake 연상 유도</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I have dinner with friends.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">It's next Tuesday.</span><span class="pattern-tag" style="background:rgba(55,138,221,0.15);color:var(--A)">A</span></div><div class="choice-note">How 물었는데 When으로 답변</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I got you a gift.</span><span class="pattern-tag" style="background:rgba(245,95,138,0.15);color:var(--C)">C</span></div><div class="choice-note">내 생일 물었는데 상대방에게 선물 — 역할 혼동</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q83</span><span class="q-type-tag" style="background:rgba(133,79,11,0.15);color:var(--T4)">④ 경험·근황형</span></div>
+    <div class="q-sentence">How often do you visit your family?</div>
+    <div class="choices">
+      <div class="choice-row is-correct"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Once a month.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I call them every day.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">visit → 전화 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I visited many countries.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"visit" 재사용 — family 대신 countries로 대상 바꿈</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I miss them.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">family → 그리움 연상 유도</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q84</span><span class="q-type-tag" style="background:rgba(133,79,11,0.15);color:var(--T4)">④ 경험·근황형</span></div>
+    <div class="q-sentence">Where did you go on vacation last year?</div>
+    <div class="choices">
+      <div class="choice-row is-correct"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I went to Italy with my family.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Stay here until I return.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">vacation → 이동 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I graduated from college last year.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"last year" 재사용 — vacation 대신 다른 과거 사건</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Do you prefer exercising alone?</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q85</span><span class="q-type-tag" style="background:rgba(153,53,86,0.15);color:var(--T3)">③ 의견·선호형</span></div>
+    <div class="q-sentence">What's your favorite kind of movie?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I'm moving to a town near the beach.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">movie → moving 연상 유도</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I don't have time to watch many, unfortunately.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I think the next show is at four thirty.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">movie → show 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">My favorite time of year is summer.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"favorite" 재사용 — movie 대신 season으로 바꿔치기</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q86</span><span class="q-type-tag" style="background:rgba(133,79,11,0.15);color:var(--T4)">④ 경험·근황형</span></div>
+    <div class="q-sentence">How was the training session?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The session was held yesterday.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"session" 재사용 — 어떠했는지 물었는데 언제인지만 답변</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">My colleague forgot to register for it.</span><span class="pattern-tag" style="background:rgba(245,95,138,0.15);color:var(--C)">C</span></div><div class="choice-note">내 경험 물었는데 동료 얘기로 — 주어 혼동</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I went home after it ended.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">경험 평가 없이 이후 행동만 서술</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I had a scheduling conflict.</span></div><div class="choice-note">정답</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q87</span><span class="q-type-tag" style="background:rgba(95,94,90,0.15);color:var(--T5)">⑤ 상황 전달·반응형</span></div>
+    <div class="q-sentence">Let's meet at 4 p.m., okay?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">My briefcase is new.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I'm busy then.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Yes, I'll buy it.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Yesterday.</span><span class="pattern-tag" style="background:rgba(239,159,39,0.15);color:var(--D)">D</span></div><div class="choice-note">앞으로의 약속인데 과거로 답변 — 시제 어긋남</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q88</span><span class="q-type-tag" style="background:rgba(12,68,124,0.15);color:var(--T1)">① 정보 요청형</span></div>
+    <div class="q-sentence">When does the museum tour begin?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">By the information desk.</span><span class="pattern-tag" style="background:rgba(55,138,221,0.15);color:var(--A)">A</span></div><div class="choice-note">When 물었는데 Where로 답변</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">A new tour guide.</span><span class="pattern-tag" style="background:rgba(55,138,221,0.15);color:var(--A)">A</span></div><div class="choice-note">When 물었는데 Who로 답변</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Free with admission.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">museum → 입장료 연상 유도</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">In fifteen minutes.</span></div><div class="choice-note">정답</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q89</span><span class="q-type-tag" style="background:rgba(15,110,86,0.15);color:var(--T2)">② 제안·요청·초대형</span></div>
+    <div class="q-sentence">Shall we go for a walk?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The performance was excellent.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Yes, I'll be sure to buy some.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">They're both busy.</span><span class="pattern-tag" style="background:rgba(245,95,138,0.15);color:var(--C)">C</span></div><div class="choice-note">우리가 산책 가는 건데 제3자 얘기로 — 주어 혼동</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Let me just finish this up first.</span></div><div class="choice-note">정답</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q90</span><span class="q-type-tag" style="background:rgba(12,68,124,0.15);color:var(--T1)">① 정보 요청형</span></div>
+    <div class="q-sentence">How can I update my profile in the system?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">That's a nice jacket.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">By letting it dry thoroughly.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">update → 건조 연상 (완전 무관)</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The exact date will be decided later.</span><span class="pattern-tag" style="background:rgba(55,138,221,0.15);color:var(--A)">A</span></div><div class="choice-note">How 물었는데 When으로 답변</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Start by clicking the edit button.</span></div><div class="choice-note">정답</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q91</span><span class="q-type-tag" style="background:rgba(15,110,86,0.15);color:var(--T2)">② 제안·요청·초대형</span></div>
+    <div class="q-sentence">Would you mind opening the window?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I'll tell them later.</span><span class="pattern-tag" style="background:rgba(245,95,138,0.15);color:var(--C)">C</span></div><div class="choice-note">나에게 요청했는데 제3자에게 전달 — 역할 혼동</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I was just about to.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Let me double-check.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">창문 열기에 double-check는 무관</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I'm still catching up.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q92</span><span class="q-type-tag" style="background:rgba(153,53,86,0.15);color:var(--T3)">③ 의견·선호형</span></div>
+    <div class="q-sentence">Would you like a printed report or will the digital file suffice?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Detailed specifications.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">report → 세부사항 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Both printing options.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"printed" 재사용 — 선호 없이 인쇄 옵션만 언급</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Let's digitize the archive.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"digital" 재사용 — 전혀 다른 맥락</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Any format is fine.</span></div><div class="choice-note">정답</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q93</span><span class="q-type-tag" style="background:rgba(12,68,124,0.15);color:var(--T1)">① 정보 요청형</span></div>
+    <div class="q-sentence">Did you submit the reimbursement form?</div>
+    <div class="choices">
+      <div class="choice-row is-correct"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I'm still working on it.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Not more than three hours.</span><span class="pattern-tag" style="background:rgba(55,138,221,0.15);color:var(--A)">A</span></div><div class="choice-note">Yes/No 질문인데 시간 정보로 답변</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">On my desk.</span><span class="pattern-tag" style="background:rgba(55,138,221,0.15);color:var(--A)">A</span></div><div class="choice-note">제출 여부 물었는데 Where로 답변</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Yes, I attended it.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"it" 재사용 — form 제출 대신 참석으로 바꿔치기</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q94</span><span class="q-type-tag" style="background:rgba(12,68,124,0.15);color:var(--T1)">① 정보 요청형</span></div>
+    <div class="q-sentence">Will you be at the museum opening?</div>
+    <div class="choices">
+      <div class="choice-row is-correct"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Probably.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I already did.</span><span class="pattern-tag" style="background:rgba(239,159,39,0.15);color:var(--D)">D</span></div><div class="choice-note">앞으로의 행사인데 이미 했다고 — 시제 어긋남</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">A tour guide.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">museum → tour guide 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Usually.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">특정 행사 참석 여부 물었는데 습관으로 답변</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q95</span><span class="q-type-tag" style="background:rgba(95,94,90,0.15);color:var(--T5)">⑤ 상황 전달·반응형</span></div>
+    <div class="q-sentence">Have you heard about the new safety manual?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I already have plans.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">It is a long meeting.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I'll report the incident to IT.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">safety → 사고 보고 연상 유도</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I helped create the first draft.</span></div><div class="choice-note">정답</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q96</span><span class="q-type-tag" style="background:rgba(153,53,86,0.15);color:var(--T3)">③ 의견·선호형</span></div>
+    <div class="q-sentence">Don't you enjoy working from home?</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I start work at eight a.m.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"work" 재사용 — 선호 없이 시간 정보</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">My co-workers live in different cities.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"work" 재사용 — 선호와 무관한 동료 정보</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I prefer the office environment.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I work with a team overseas.</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">"work" 재사용 — 선호와 무관한 업무 정보</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q97</span><span class="q-type-tag" style="background:rgba(95,94,90,0.15);color:var(--T5)">⑤ 상황 전달·반응형</span></div>
+    <div class="q-sentence">I saw you at the new shopping mall.</div>
+    <div class="choices">
+      <div class="choice-row is-correct"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I had to buy a shirt.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">When will it be completed?</span><span class="pattern-tag" style="background:rgba(29,158,117,0.15);color:var(--B)">B</span></div><div class="choice-note">new shopping mall → 공사 완공 연상 유도</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">How about tomorrow?</span><span class="pattern-tag" style="background:rgba(239,159,39,0.15);color:var(--D)">D</span></div><div class="choice-note">과거 목격 얘기인데 미래 약속으로 — 시제 어긋남</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Where is my pencil?</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+    </div>
+  </div>
+  <div class="q-divider"></div>
+
+  <div class="q-block">
+    <div class="q-header"><span class="q-num-label">Q98</span><span class="q-type-tag" style="background:rgba(95,94,90,0.15);color:var(--T5)">⑤ 상황 전달·반응형</span></div>
+    <div class="q-sentence">The book was amazing.</div>
+    <div class="choices">
+      <div class="choice-row is-wrong"><span class="choice-idx">①</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">The library by my house.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">book → library 연상 유도</div></div></div>
+      <div class="choice-row is-correct"><span class="choice-idx">②</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">I thought so too.</span></div><div class="choice-note">정답</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">③</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Yes, I'm free.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+      <div class="choice-row is-wrong"><span class="choice-idx">④</span><div class="choice-main"><div class="choice-text-row"><span class="choice-text">Reservations are for seven p.m.</span><span class="pattern-tag" style="background:rgba(155,89,245,0.15);color:var(--E)">E</span></div><div class="choice-note">완전 무관한 내용</div></div></div>
+    </div>
+  </div>
+</div>
+
+</div>
+</main>
+<script>
+const navBtns = document.querySelectorAll('.nav-btn');
+function goTo(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  navBtns.forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
