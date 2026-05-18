@@ -593,19 +593,42 @@ function resetStudyMode() {
 
 function attachStudyClicks() {
   const patternNames = { A: 'WH 정보 혼동', B: '키워드 재사용', C: '주어·역할 혼동', D: '시제·상황 어긋남', E: '연상 유도 무관' };
+  const correctPatternNames = { '①': '간접 답변', '②': '유보적 답변', '③': '상황 전환', '④': '역질문·제안', '⑤': '직접 답변' };
   document.querySelectorAll('.choice-row').forEach(row => {
     row.onclick = function() {
       if (currentMode !== 'study') return;
       if (row.classList.contains('revealed')) return;
       row.classList.add('revealed');
-      const tag = row.querySelector('.pattern-tag');
-      if (tag) {
-        const letter = tag.textContent.trim();
-        if (patternNames[letter] && !row.querySelector('.pattern-name-label')) {
-          const label = document.createElement('span');
-          label.className = 'pattern-name-label';
-          label.textContent = patternNames[letter];
-          tag.insertAdjacentElement('afterend', label);
+
+      if (row.classList.contains('is-wrong')) {
+        const tag = row.querySelector('.pattern-tag');
+        if (tag) {
+          const letter = tag.textContent.trim();
+          if (patternNames[letter] && !row.querySelector('.pattern-name-label')) {
+            const label = document.createElement('span');
+            label.className = 'pattern-name-label';
+            label.textContent = patternNames[letter];
+            tag.insertAdjacentElement('afterend', label);
+          }
+        }
+      }
+
+      if (row.classList.contains('is-correct')) {
+        const cp = row.dataset.correctPattern;
+        if (cp && !row.querySelector('.correct-pattern-label')) {
+          const textRow = row.querySelector('.choice-text-row');
+          const tag = document.createElement('span');
+          tag.className = 'correct-pattern-label';
+          tag.style.cssText = 'font-family:"DM Mono",monospace;font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;background:rgba(74,144,217,0.15);color:#4A90D9;flex-shrink:0;white-space:nowrap;';
+          tag.textContent = cp;
+          textRow.appendChild(tag);
+          const note = row.querySelector('.choice-note');
+          if (note) {
+            const nameLabel = document.createElement('span');
+            nameLabel.style.cssText = 'font-size:11px;color:#4A90D9;margin-left:4px;';
+            nameLabel.textContent = correctPatternNames[cp] || '';
+            note.appendChild(nameLabel);
+          }
         }
       }
     };
