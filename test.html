@@ -102,7 +102,7 @@ aside { background: var(--surface); border-right: 1px solid var(--border); paddi
     <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--B)">B</span><span class="postit-name" style="color:var(--B)">키워드 재사용</span></div><div class="postit-desc">질문의 핵심 단어를 오답에 그대로 삽입</div></div>
     <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--C)">C</span><span class="postit-name" style="color:var(--C)">주어·역할 혼동</span></div><div class="postit-desc">요청자 ↔ 수행자 역할 교체</div></div>
     <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--D)">D</span><span class="postit-name" style="color:var(--D)">시제·상황 어긋남</span></div><div class="postit-desc">과거 질문에 미래형, 끝난 일을 앞으로</div></div>
-    <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--E)">E</span><span class="postit-name" style="color:var(--E)">연상 유도 무관</span></div><div class="postit-desc">단어 연상으로 전혀 다른 내용 제시</div></div>
+    <div class="postit"><div class="postit-top"><span class="postit-letter" style="color:var(--E)">E</span><span class="postit-name" style="color:var(--E)">연상·무관</span></div><div class="postit-desc">단어 연상으로 전혀 다른 내용 제시</div></div>
   </div>
   <div class="sidebar-divider"></div>
   <div class="postit-label">정답의 특징</div>
@@ -592,7 +592,7 @@ function resetStudyMode() {
 }
 
 function attachStudyClicks() {
-  const patternNames = { A: 'WH 정보 혼동', B: '키워드 재사용', C: '주어·역할 혼동', D: '시제·상황 어긋남', E: '연상 유도 무관' };
+  const patternNames = { A: 'WH 정보 혼동', B: '키워드 재사용', C: '주어·역할 혼동', D: '시제·상황 어긋남', E: '연상·무관' };
   const correctPatternNames = { '①': '간접 답변', '②': '유보적 답변', '③': '상황 전환', '④': '역질문·제안', '⑤': '직접 답변' };
   document.querySelectorAll('.choice-row').forEach(row => {
     row.onclick = function() {
