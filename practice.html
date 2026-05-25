@@ -9501,6 +9501,12 @@ function render() {
   container.innerHTML = '';
   let count = 0;
 
+  // 현재 필터 모드 결정
+  let filterMode = 'all';
+  let filterValue = 'all';
+  if (state.answer !== 'all') { filterMode = 'answer'; filterValue = state.answer; }
+  if (state.trap !== 'all') { filterMode = 'trap'; filterValue = state.trap; }
+
   QUESTIONS.forEach(q => {
     const answerCode = getAnswerCommonCode(q) || '';
     const trapCodes = getTrapCodes(q);
@@ -9511,7 +9517,7 @@ function render() {
     const testOk = state.test === 'all' || (q.num >= TEST_RANGES[state.test][0] && q.num <= TEST_RANGES[state.test][1]);
 
     if (qtOk && ansOk && trapOk && testOk) {
-      container.appendChild(buildCard(q));
+      container.appendChild(buildCard(q, filterMode, filterValue));
       count++;
     }
   });
