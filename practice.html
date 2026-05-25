@@ -9454,25 +9454,34 @@ function getTrapCodes(q) {
   return codes;
 }
 
-function buildCard(q) {
+function buildCard(q, filterMode, filterValue) {
   const div = document.createElement('div');
   div.className = 'card';
-  div.dataset.qtype = q.qtypeCode;
-  div.dataset.answer = getAnswerCommonCode(q) || '';
-  div.dataset.traps = [...getTrapCodes(q)].join(',');
 
   const qtClass = `qt-${q.qtypeCode}`;
+  const labels = ['a', 'b', 'c', 'd'];
 
   let choicesHtml = '';
-  const labels = ['a', 'b', 'c', 'd'];
+
   q.choices.forEach((c, i) => {
     const marker = c.correct ? '✅' : '❌';
     let tagsHtml = '';
+
     if (c.correct) {
       tagsHtml = `<span class="tag tag-answer">${c.answerCode} ${c.answerName} (${c.answerDetail})</span>`;
     } else if (c.traps && c.traps.length > 0) {
       tagsHtml = c.traps.map(t => `<span class="tag tag-${t.code}">${t.code} ${t.name}${t.desc ? ' — ' + t.desc : ''}</span>`).join('');
     }
+
+    // 정답 특징 필터: 정답 선지만
+    if (filterMode === 'answer' && !c.correct) return;
+
+    // 오답 함정 필터: 해당 함정 붙은 선지만
+    if (filterMode === 'trap') {
+      if (c.correct) return;
+      if (!c.traps || !c.traps.some(t => t.code === filterValue)) return;
+    }
+
     choicesHtml += `
       <div class="choice ${c.correct ? 'correct' : ''}">
         <div class="choice-row">
