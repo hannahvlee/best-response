@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choose the Best Response</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Pretendard', sans-serif;
+    background: #000;
+    color: white;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── 로그인 화면 ── */
+  .login-screen {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    transition: opacity 0.4s ease;
+  }
+
+  .login-screen.hide {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .login-title {
+    font-size: 1.4rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .login-input-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  input[type="password"] {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 0.9rem;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    color: white;
+    padding: 0.75rem 1.25rem;
+    width: 220px;
+    outline: none;
+    text-align: center;
+    letter-spacing: 0.1em;
+    transition: border-color 0.2s;
+  }
+
+  input[type="password"]::placeholder {
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0;
+  }
+
+  input[type="password"]:focus {
+    border-color: rgba(255,255,255,0.35);
+  }
+
+  .error-msg {
+    font-size: 0.72rem;
+    color: rgba(255,100,100,0.7);
+    height: 1rem;
+  }
+
+  /* ── 선택 화면 ── */
+  .select-screen {
+    height: 100vh;
+    display: flex;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .select-screen.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .select-half {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    color: white;
+  }
+
+  .select-half:first-child {
+    border-right: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .select-half:hover {
+    background: rgba(255,255,255,0.04);
+  }
+
+  .select-icon {
+    font-size: 2rem;
+    opacity: 0.5;
+  }
+
+  .select-label {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: -0.01em;
+  }
+
+  .select-desc {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0;
+  }
+
+  .divider {
+    width: 1px;
+    height: 100%;
+    background: rgba(255,255,255,0.08);
+    position: absolute;
+    left: 50%;
+  }
+</style>
+</head>
+<body>
+
+<!-- 로그인 화면 -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-title">Choose the Best Response</div>
+  <div class="login-input-wrap">
+    <input type="password" id="pw" placeholder="password" autofocus>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+</div>
+
+<!-- 선택 화면 -->
+<div class="select-screen" id="selectScreen">
+  <a class="select-half" href="reference.html">
+    <div class="select-icon">📋</div>
+    <div class="select-label">분류 체계 보기</div>
+    <div class="select-desc">질문 유형 · 정답 특징 · 오답 함정</div>
+  </a>
+  <a class="select-half" href="practice.html">
+    <div class="select-icon">📝</div>
+    <div class="select-label">실전 문제</div>
+    <div class="select-desc">185문제 · 필터 검색</div>
+  </a>
+</div>
+
+<script>
+  const PASSWORD = 'dlgkssk';
+
+  function showSelectScreen() {
+    document.getElementById('loginScreen').classList.add('hide');
+    setTimeout(() => {
+      document.getElementById('selectScreen').classList.add('show');
+    }, 400);
+  }
+
+  // 이미 인증된 경우 바로 선택 화면
+  if (sessionStorage.getItem('auth') === 'true') {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('selectScreen').classList.add('show');
+  }
+
+  document.getElementById('pw').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      if (this.value === PASSWORD) {
+        sessionStorage.setItem('auth', 'true');
+        showSelectScreen();
+      } else {
+        document.getElementById('errorMsg').textContent = 'Incorrect password';
+        this.value = '';
+      }
+    }
+  });
+
+  // 입력 시작하면 에러 메시지 지우기
+  document.getElementById('pw').addEventListener('input', function() {
+    document.getElementById('errorMsg').textContent = '';
+  });
+</script>
+</body>
+</html>
