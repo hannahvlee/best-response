@@ -9454,7 +9454,7 @@ function getTrapCodes(q) {
   return codes;
 }
 
-function buildCard(q, filterMode, filterValue) {
+function buildCard(q, answerFilter, trapFilter) {
   const div = document.createElement('div');
   div.className = 'card';
 
@@ -9473,13 +9473,27 @@ function buildCard(q, filterMode, filterValue) {
       tagsHtml = c.traps.map(t => `<span class="tag tag-${t.code}">${t.code} ${t.name}${t.desc ? ' — ' + t.desc : ''}</span>`).join('');
     }
 
-    // 정답 특징 필터: 정답 선지만
-    if (filterMode === 'answer' && !c.correct) return;
+    const showAnswer = answerFilter !== 'all';
+    const showTrap = trapFilter !== 'all';
 
-    // 오답 함정 필터: 해당 함정 붙은 선지만
-    if (filterMode === 'trap') {
+    // 둘 다 필터 없으면 전체 보여줌
+    if (!showAnswer && !showTrap) {
+      // pass
+    }
+    // 정답 특징만 필터
+    else if (showAnswer && !showTrap) {
+      if (!c.correct) return;
+    }
+    // 오답 함정만 필터
+    else if (!showAnswer && showTrap) {
       if (c.correct) return;
-      if (!c.traps || !c.traps.some(t => t.code === filterValue)) return;
+      if (!c.traps || !c.traps.some(t => t.code === trapFilter)) return;
+    }
+    // 둘 다 필터 — 정답 선지 OR 해당 함정 선지
+    else {
+      const isMatchAnswer = c.correct;
+      const isMatchTrap = !c.correct && c.traps && c.traps.some(t => t.code === trapFilter);
+      if (!isMatchAnswer && !isMatchTrap) return;
     }
 
     choicesHtml += `
@@ -9510,11 +9524,9 @@ function render() {
   container.innerHTML = '';
   let count = 0;
 
-  // 현재 필터 모드 결정
-  let filterMode = 'all';
-  let filterValue = 'all';
-  if (state.answer !== 'all') { filterMode = 'answer'; filterValue = state.answer; }
-  if (state.trap !== 'all') { filterMode = 'trap'; filterValue = state.trap; }
+  // 현재 필터 결정
+  const answerFilter = state.answer;
+  const trapFilter = state.trap;
 
   QUESTIONS.forEach(q => {
     const answerCode = getAnswerCommonCode(q) || '';
@@ -9526,7 +9538,7 @@ function render() {
     const testOk = state.test === 'all' || (q.num >= TEST_RANGES[state.test][0] && q.num <= TEST_RANGES[state.test][1]);
 
     if (qtOk && ansOk && trapOk && testOk) {
-      container.appendChild(buildCard(q, filterMode, filterValue));
+      container.appendChild(buildCard(q, answerFilter, trapFilter));
       count++;
     }
   });
