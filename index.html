@@ -105,7 +105,7 @@
     color: white;
   }
 
-  .select-half:first-child {
+  .select-half:not(:last-child) {
     border-right: 1px solid rgba(255,255,255,0.08);
   }
 
@@ -162,6 +162,11 @@
     <div class="select-icon">📝</div>
     <div class="select-label">실전 문제</div>
     <div class="select-desc">185문제 · 필터 검색</div>
+  </a>
+  <a class="select-half" href="practice-sets.html">
+    <div class="select-icon">📖</div>
+    <div class="select-label">교재 연습문제</div>
+    <div class="select-desc">Practice Sets · 모듈별 창작 문제</div>
   </a>
 </div>
 

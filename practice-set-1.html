@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Set 1 — Best Response</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #F7F6F3;
+      color: #1A1A1A;
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .page-header {
+      max-width: 760px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #888;
+      text-decoration: none;
+      margin-bottom: 1.2rem;
+    }
+    .back-link:hover { color: #444; }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #1A1A1A;
+      margin-bottom: 6px;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: #888;
+    }
+
+    /* Section headers */
+    .section-header {
+      max-width: 760px;
+      margin: 2.5rem auto 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #E5E4E0;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1A1A1A;
+    }
+
+    .section-badge {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: #EDEBE6;
+      color: #666;
+    }
+
+    .dummy-badge {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: #EDEBE6;
+      color: #888;
+    }
+
+    /* Question cards */
+    .q-card {
+      max-width: 760px;
+      margin: 0 auto 10px;
+      background: #fff;
+      border: 1px solid #E5E4E0;
+      border-radius: 12px;
+      padding: 1.1rem 1.25rem;
+    }
+
+    .q-header {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .q-num {
+      font-size: 12px;
+      font-weight: 500;
+      color: #AAA;
+      min-width: 22px;
+      padding-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .q-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1A1A1A;
+      line-height: 1.5;
+    }
+
+    /* Tags */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+      padding-left: 32px;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .tag-type1 { background: #EEEDFE; color: #3C3489; }
+    .tag-type2 { background: #E1F5EE; color: #085041; }
+    .tag-type3 { background: #FAEEDA; color: #633806; }
+    .tag-type4 { background: #FAECE7; color: #712B13; }
+    .tag-type5 { background: #FBEAF0; color: #72243E; }
+    .tag-type6 { background: #EAF3DE; color: #27500A; }
+    .tag-src   { background: #F1EFE8; color: #5F5E5A; }
+    .tag-ans   { background: #EAF3DE; color: #27500A; }
+
+    /* Choices */
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-left: 32px;
+    }
+
+    .choice {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 5px 8px;
+      border-radius: 7px;
+      font-size: 13px;
+    }
+
+    .choice.correct {
+      background: #E1F5EE;
+    }
+
+    .c-label {
+      min-width: 18px;
+      font-weight: 600;
+      flex-shrink: 0;
+      color: #AAA;
+      font-size: 12px;
+      padding-top: 1px;
+    }
+
+    .choice.correct .c-label {
+      color: #085041;
+    }
+
+    .c-text {
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .choice.correct .c-text {
+      color: #085041;
+      font-weight: 500;
+    }
+
+    .trap-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-left: 5px;
+      background: #FAEEDA;
+      color: #633806;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    /* Answer key toggle */
+    .answer-toggle {
+      display: none;
+    }
+
+    /* Show answers button */
+    .show-btn {
+      max-width: 760px;
+      margin: 1.5rem auto 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .show-btn button {
+      background: #1A1A1A;
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .show-btn button:hover { background: #333; }
+
+    /* Answer key section */
+    .answer-key {
+      max-width: 760px;
+      margin: 2rem auto 0;
+      background: #fff;
+      border: 1px solid #E5E4E0;
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .answer-key h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #1A1A1A;
+    }
+
+    .answer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 8px;
+    }
+
+    .answer-item {
+      font-size: 12px;
+      color: #555;
+      padding: 6px 10px;
+      background: #F7F6F3;
+      border-radius: 7px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .answer-item .ans {
+      font-weight: 600;
+      color: #085041;
+    }
+
+    @media (max-width: 600px) {
+      .tags { padding-left: 0; }
+      .choices { padding-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-header">
+  <a class="back-link" href="practice-sets.html">← Practice Sets</a>
+  <div class="page-title">Practice Set 1</div>
+  <div class="page-subtitle">교재용 창작 문제 · 모듈 1 + 더미 + 모듈 2 Basic + 모듈 2 Advanced</div>
+</div>
+
+<!-- ───── MODULE 1 ───── -->
+<div class="section-header">
+  <span class="section-title">모듈 1</span>
+  <span class="section-badge">8문제</span>
+</div>
+
+<!-- Q1 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">1</span><span class="q-text">Why was the product launch delayed?</span></div>
+  <div class="tags">
+    <span class="tag tag-type1">1 정보 요청형</span>
+    <span class="tag tag-src">직장</span>
+    <span class="tag tag-ans">정답 C / A 직접 답변</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">Next Thursday.<span class="trap-badge">a WH혼동</span></span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">The product looks great.<span class="trap-badge">b 키워드·연상</span></span></div>
+    <div class="choice correct"><span class="c-label">C</span><span class="c-text">There were some issues with the packaging.</span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">I'm looking forward to the launch.<span class="trap-badge">d 시제·상황</span></span></div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">2</span><span class="q-text">When is the next train to the airport?</span></div>
+  <div class="tags">
+    <span class="tag tag-type1">1 정보 요청형</span>
+    <span class="tag tag-src">일상</span>
+    <span class="tag tag-ans">정답 B / B 간접·우회</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">Platform 3.<span class="trap-badge">a WH혼동</span></span></div>
+    <div class="choice correct"><span class="c-label">B</span><span class="c-text">Let me check the board.</span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">I usually take the bus to the airport.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">The last train already left.<span class="trap-badge">d 시제·상황</span></span></div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">3</span><span class="q-text">Who is teaching the economics seminar this semester?</span></div>
+  <div class="tags">
+    <span class="tag tag-type1">1 정보 요청형</span>
+    <span class="tag tag-src">학교</span>
+    <span class="tag tag-ans">정답 D / A 직접 답변</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">In the lecture hall on the 2nd floor.<span class="trap-badge">a WH혼동</span></span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">The seminar was really interesting.<span class="trap-badge">d 시제·상황</span></span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">The economics department is on the 3rd floor.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice correct"><span class="c-label">D</span><span class="c-text">Professor Kim, I believe.</span></div>
+  </div>
+</div>
+
+<!-- Q4 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">4</span><span class="q-text">How do I unlock my gym locker?</span></div>
+  <div class="tags">
+    <span class="tag tag-type1">1 정보 요청형</span>
+    <span class="tag tag-src">일상</span>
+    <span class="tag tag-ans">정답 A / G 해결책·추가정보</span>
+  </div>
+  <div class="choices">
+    <div class="choice correct"><span class="c-label">A</span><span class="c-text">Ask someone at the front desk.</span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">The gym closes at 10 tonight.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">I forgot my locker number too.<span class="trap-badge">b 키워드·연상</span></span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">The lockers were just installed.<span class="trap-badge">f 완전 무관</span></span></div>
+  </div>
+</div>
+
+<!-- Q5 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">5</span><span class="q-text">Have you finished the reading for tomorrow's class?</span></div>
+  <div class="tags">
+    <span class="tag tag-type4">4 경험·근황형</span>
+    <span class="tag tag-src">학교</span>
+    <span class="tag tag-ans">정답 C / B 간접·우회</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">The textbook is quite expensive.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">Class starts at 9 tomorrow.<span class="trap-badge">d 시제·상황</span></span></div>
+    <div class="choice correct"><span class="c-label">C</span><span class="c-text">Not yet, I'm afraid.</span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">Yes, please send me the reading list.<span class="trap-badge">c 역할 혼동</span></span></div>
+  </div>
+</div>
+
+<!-- Q6 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">6</span><span class="q-text">Did you get a chance to try the new café nearby?</span></div>
+  <div class="tags">
+    <span class="tag tag-type4">4 경험·근황형</span>
+    <span class="tag tag-src">일상</span>
+    <span class="tag tag-ans">정답 B / A 직접 답변</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">The café opens at 7 in the morning.<span class="trap-badge">d 시제·상황</span></span></div>
+    <div class="choice correct"><span class="c-label">B</span><span class="c-text">I stopped by last week.</span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">There are a lot of good restaurants nearby.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">I'll try the sandwich next time.<span class="trap-badge">b 키워드·연상</span></span></div>
+  </div>
+</div>
+
+<!-- Q7 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">7</span><span class="q-text">Do you prefer working in the morning or the evening?</span></div>
+  <div class="tags">
+    <span class="tag tag-type3">3 의견·선호형</span>
+    <span class="tag tag-src">일상</span>
+    <span class="tag tag-ans">정답 D / B 간접·우회</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">Yes, I work very hard.<span class="trap-badge">f 완전 무관</span></span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">The morning shift starts at 8.<span class="trap-badge">b 키워드·연상</span></span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">I worked late yesterday.<span class="trap-badge">d 시제·상황</span></span></div>
+    <div class="choice correct"><span class="c-label">D</span><span class="c-text">It depends on what I'm working on.</span></div>
+  </div>
+</div>
+
+<!-- Q8 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">8</span><span class="q-text">The team lunch is this Friday at noon.</span></div>
+  <div class="tags">
+    <span class="tag tag-type5">5 일정·공지형</span>
+    <span class="tag tag-src">직장</span>
+    <span class="tag tag-ans">정답 A / D 조건부·역질문</span>
+  </div>
+  <div class="choices">
+    <div class="choice correct"><span class="c-label">A</span><span class="c-text">Should I bring something to drink?</span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">The last one was a lot of fun.<span class="trap-badge">d 시제·상황</span></span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">I love trying new restaurants.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">The team leader is very busy.<span class="trap-badge">b 키워드·연상</span></span></div>
+  </div>
+</div>
+
+<!-- ───── DUMMY ───── -->
+<div class="section-header">
+  <span class="section-title">더미</span>
+  <span class="section-badge">3문제</span>
+  <span class="dummy-badge">채점 미반영</span>
+</div>
+
+<!-- D1 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">D1</span><span class="q-text">Where is the nearest post office?</span></div>
+  <div class="tags">
+    <span class="tag tag-type1">1 정보 요청형</span>
+    <span class="tag tag-src">일상</span>
+    <span class="tag tag-ans">정답 C / A 직접 답변</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">It opens at 9 on weekdays.<span class="trap-badge">a WH혼동</span></span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">I need to mail a package too.<span class="trap-badge">f 완전 무관</span></span></div>
+    <div class="choice correct"><span class="c-label">C</span><span class="c-text">2 blocks down on the left.</span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">I forgot to bring my ID.<span class="trap-badge">f 완전 무관</span></span></div>
+  </div>
+</div>
+
+<!-- D2 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">D2</span><span class="q-text">What time does the library close today?</span></div>
+  <div class="tags">
+    <span class="tag tag-type1">1 정보 요청형</span>
+    <span class="tag tag-src">일상</span>
+    <span class="tag tag-ans">정답 B / A 직접 답변</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">On the ground floor near the entrance.<span class="trap-badge">a WH혼동</span></span></div>
+    <div class="choice correct"><span class="c-label">B</span><span class="c-text">At 8, I think.</span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">I returned my books yesterday.<span class="trap-badge">f 완전 무관</span></span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">There's a café inside the library.<span class="trap-badge">f 완전 무관</span></span></div>
+  </div>
+</div>
+
+<!-- D3 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">D3</span><span class="q-text">I left my umbrella on the bus this morning.</span></div>
+  <div class="tags">
+    <span class="tag tag-type6">6 감상·공감형</span>
+    <span class="tag tag-src">일상</span>
+    <span class="tag tag-ans">정답 D / G 해결책·추가정보</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">It's supposed to rain all week.<span class="trap-badge">f 완전 무관</span></span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">I take the bus every day.<span class="trap-badge">f 완전 무관</span></span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">The bus was really crowded today.<span class="trap-badge">f 완전 무관</span></span></div>
+    <div class="choice correct"><span class="c-label">D</span><span class="c-text">You could try calling the lost and found.</span></div>
+  </div>
+</div>
+
+<!-- ───── MODULE 2 BASIC ───── -->
+<div class="section-header">
+  <span class="section-title">모듈 2 Basic</span>
+  <span class="section-badge">7문제</span>
+</div>
+
+<!-- M2B Q1 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">1</span><span class="q-text">Would you like to join us for the department meeting tomorrow?</span></div>
+  <div class="tags">
+    <span class="tag tag-type2">2 제안·요청형</span>
+    <span class="tag tag-src">직장</span>
+    <span class="tag tag-ans">정답 C / C 거절·불가</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">The meeting was very productive.<span class="trap-badge">d 시제·상황</span></span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">The department has 20 members.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice correct"><span class="c-label">C</span><span class="c-text">Sorry, I can't make it.</span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">I'll send you the agenda.<span class="trap-badge">c 역할 혼동</span></span></div>
+  </div>
+</div>
+
+<!-- M2B Q2 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">2</span><span class="q-text">Let's grab something to eat before the seminar.</span></div>
+  <div class="tags">
+    <span class="tag tag-type2">2 제안·요청형</span>
+    <span class="tag tag-src">학교·일상</span>
+    <span class="tag tag-ans">정답 D / D 조건부·역질문</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">I already had lunch.<span class="trap-badge">d 시제·상황</span></span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">The seminar starts at 2.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">There's a good place near here.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice correct"><span class="c-label">D</span><span class="c-text">How much time do we have?</span></div>
+  </div>
+</div>
+
+<!-- M2B Q3 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">3</span><span class="q-text">Who is supposed to collect the feedback forms?</span></div>
+  <div class="tags">
+    <span class="tag tag-type1">1 정보 요청형</span>
+    <span class="tag tag-src">직장</span>
+    <span class="tag tag-ans">정답 A / B 간접·우회</span>
+  </div>
+  <div class="choices">
+    <div class="choice correct"><span class="c-label">A</span><span class="c-text">I'm not sure, but I can find out.</span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">The forms are on the front desk.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">The feedback was mostly positive.<span class="trap-badge">b 키워드·연상</span></span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">I already filled mine out.<span class="trap-badge">e 주제 연관</span></span></div>
+  </div>
+</div>
+
+<!-- M2B Q4 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">4</span><span class="q-text">It looks like the afternoon session got canceled.</span></div>
+  <div class="tags">
+    <span class="tag tag-type6">6 감상·공감형</span>
+    <span class="tag tag-src">직장·학교</span>
+    <span class="tag tag-ans">정답 B / F 공감·반응</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">The morning session was quite long.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice correct"><span class="c-label">B</span><span class="c-text">That's really disappointing.</span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">The session starts at 3.<span class="trap-badge">d 시제·상황</span></span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">I'll cancel my reservation.<span class="trap-badge">b 키워드·연상</span></span></div>
+  </div>
+</div>
+
+<!-- M2B Q5 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">5</span><span class="q-text">Could you help me set up the projector before the presentation?</span></div>
+  <div class="tags">
+    <span class="tag tag-type2">2 제안·요청형</span>
+    <span class="tag tag-src">직장</span>
+    <span class="tag tag-ans">정답 D / E 수용·이해</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">The presentation went really well.<span class="trap-badge">d 시제·상황</span></span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">The projector is on the 2nd floor.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">I gave the presentation last time.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice correct"><span class="c-label">D</span><span class="c-text">Sure, I'll be there in a few minutes.</span></div>
+  </div>
+</div>
+
+<!-- M2B Q6 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">6</span><span class="q-text">Do you prefer studying alone or in a group?</span></div>
+  <div class="tags">
+    <span class="tag tag-type3">3 의견·선호형</span>
+    <span class="tag tag-src">학교</span>
+    <span class="tag tag-ans">정답 C / B 간접·우회</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">The study room is on the 3rd floor.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">I studied all weekend.<span class="trap-badge">d 시제·상황</span></span></div>
+    <div class="choice correct"><span class="c-label">C</span><span class="c-text">It really depends on the subject.</span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">Our study group meets on Thursdays.<span class="trap-badge">e 주제 연관</span></span></div>
+  </div>
+</div>
+
+<!-- M2B Q7 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">7</span><span class="q-text">I don't think I can make it to the book club this week.</span></div>
+  <div class="tags">
+    <span class="tag tag-type6">6 감상·공감형</span>
+    <span class="tag tag-src">일상</span>
+    <span class="tag tag-ans">정답 A / F 공감·반응</span>
+  </div>
+  <div class="choices">
+    <div class="choice correct"><span class="c-label">A</span><span class="c-text">Oh, that's a shame.</span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">The book club meets every Tuesday.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">I finished the book last night.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">Let me know when you're free.<span class="trap-badge">c 역할 혼동</span></span></div>
+  </div>
+</div>
+
+<!-- ───── MODULE 2 ADVANCED ───── -->
+<div class="section-header">
+  <span class="section-title">모듈 2 Advanced</span>
+  <span class="section-badge">3문제</span>
+</div>
+
+<!-- M2A Q1 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">1</span><span class="q-text">Would you rather eat in or order delivery tonight?</span></div>
+  <div class="tags">
+    <span class="tag tag-type3">3 의견·선호형</span>
+    <span class="tag tag-src">일상</span>
+    <span class="tag tag-ans">정답 C / B 간접·우회</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">The delivery took over an hour.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">There's a good restaurant nearby.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice correct"><span class="c-label">C</span><span class="c-text">It really depends on how tired we are.</span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">I ordered too much last time.<span class="trap-badge">b 키워드·연상</span></span></div>
+  </div>
+</div>
+
+<!-- M2A Q2 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">2</span><span class="q-text">Do you agree with the office relocation?</span></div>
+  <div class="tags">
+    <span class="tag tag-type3">3 의견·선호형</span>
+    <span class="tag tag-src">직장</span>
+    <span class="tag tag-ans">정답 B / B 간접·우회</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">The new office has great views.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice correct"><span class="c-label">B</span><span class="c-text">I have mixed feelings about it.</span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">The move is scheduled for next month.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">D</span><span class="c-text">I helped with the decision.<span class="trap-badge">b 키워드·연상</span></span></div>
+  </div>
+</div>
+
+<!-- M2A Q3 -->
+<div class="q-card">
+  <div class="q-header"><span class="q-num">3</span><span class="q-text">Could you look over my résumé before I apply?</span></div>
+  <div class="tags">
+    <span class="tag tag-type2">2 제안·요청형</span>
+    <span class="tag tag-src">직장·학교</span>
+    <span class="tag tag-ans">정답 D / D 조건부·역질문</span>
+  </div>
+  <div class="choices">
+    <div class="choice"><span class="c-label">A</span><span class="c-text">I sent mine in last week.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">B</span><span class="c-text">The application deadline is Friday.<span class="trap-badge">e 주제 연관</span></span></div>
+    <div class="choice"><span class="c-label">C</span><span class="c-text">Résumés are so hard to write.<span class="trap-badge">b 키워드·연상</span></span></div>
+    <div class="choice correct"><span class="c-label">D</span><span class="c-text">Is there a specific part you're worried about?</span></div>
+  </div>
+</div>
+
+</body>
+</html>

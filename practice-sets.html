@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice Sets — Best Response</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Pretendard', sans-serif;
+    background: #000;
+    color: white;
+    min-height: 100vh;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  .header {
+    max-width: 720px;
+    margin: 0 auto 3rem;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.3);
+    text-decoration: none;
+    margin-bottom: 2rem;
+    transition: color 0.15s;
+  }
+
+  .back-link:hover { color: rgba(255,255,255,0.6); }
+
+  .page-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-desc {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.25);
+  }
+
+  /* 그리드 */
+  .sets-grid {
+    max-width: 720px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  /* 카드 — 활성 */
+  .set-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    text-decoration: none;
+    color: white;
+    background: rgba(255,255,255,0.03);
+    transition: background 0.15s, border-color 0.15s;
+    cursor: pointer;
+  }
+
+  .set-card:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  /* 카드 — 잠금 */
+  .set-card.locked {
+    opacity: 0.35;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .set-num {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .set-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: -0.01em;
+  }
+
+  .set-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .set-meta-row {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .set-status {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 20px;
+    margin-top: 4px;
+  }
+
+  .status-ready {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.5);
+  }
+
+  .status-soon {
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.2);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a class="back-link" href="index.html">← 메인으로</a>
+  <div class="page-title">Practice Sets</div>
+  <div class="page-desc">모듈별 창작 문제 · 산타 스타일 기반</div>
+</div>
+
+<div class="sets-grid">
+
+  <!-- Set 1 — 활성 -->
+  <a class="set-card" href="practice-set-1.html">
+    <div class="set-num">Set 01</div>
+    <div class="set-title">Practice Set 1</div>
+    <div class="set-meta">
+      <div class="set-meta-row">모듈1 8문 + 더미 3문</div>
+      <div class="set-meta-row">Basic 7문 · Advanced 3문</div>
+    </div>
+    <span class="set-status status-ready">준비됨</span>
+  </a>
+
+  <!-- Set 2~10 — 잠금 -->
+  <div class="set-card locked">
+    <div class="set-num">Set 02</div>
+    <div class="set-title">Practice Set 2</div>
+    <div class="set-meta">
+      <div class="set-meta-row">모듈1 8문 + 더미 3문</div>
+      <div class="set-meta-row">Basic 7문 · Advanced 3문</div>
+    </div>
+    <span class="set-status status-soon">준비 중</span>
+  </div>
+
+  <div class="set-card locked">
+    <div class="set-num">Set 03</div>
+    <div class="set-title">Practice Set 3</div>
+    <div class="set-meta">
+      <div class="set-meta-row">모듈1 8문 + 더미 3문</div>
+      <div class="set-meta-row">Basic 7문 · Advanced 3문</div>
+    </div>
+    <span class="set-status status-soon">준비 중</span>
+  </div>
+
+  <div class="set-card locked">
+    <div class="set-num">Set 04</div>
+    <div class="set-title">Practice Set 4</div>
+    <div class="set-meta">
+      <div class="set-meta-row">모듈1 8문 + 더미 3문</div>
+      <div class="set-meta-row">Basic 7문 · Advanced 3문</div>
+    </div>
+    <span class="set-status status-soon">준비 중</span>
+  </div>
+
+  <div class="set-card locked">
+    <div class="set-num">Set 05</div>
+    <div class="set-title">Practice Set 5</div>
+    <div class="set-meta">
+      <div class="set-meta-row">모듈1 8문 + 더미 3문</div>
+      <div class="set-meta-row">Basic 7문 · Advanced 3문</div>
+    </div>
+    <span class="set-status status-soon">준비 중</span>
+  </div>
+
+  <div class="set-card locked">
+    <div class="set-num">Set 06</div>
+    <div class="set-title">Practice Set 6</div>
+    <div class="set-meta">
+      <div class="set-meta-row">모듈1 8문 + 더미 3문</div>
+      <div class="set-meta-row">Basic 7문 · Advanced 3문</div>
+    </div>
+    <span class="set-status status-soon">준비 중</span>
+  </div>
+
+  <div class="set-card locked">
+    <div class="set-num">Set 07</div>
+    <div class="set-title">Practice Set 7</div>
+    <div class="set-meta">
+      <div class="set-meta-row">모듈1 8문 + 더미 3문</div>
+      <div class="set-meta-row">Basic 7문 · Advanced 3문</div>
+    </div>
+    <span class="set-status status-soon">준비 중</span>
+  </div>
+
+  <div class="set-card locked">
+    <div class="set-num">Set 08</div>
+    <div class="set-title">Practice Set 8</div>
+    <div class="set-meta">
+      <div class="set-meta-row">모듈1 8문 + 더미 3문</div>
+      <div class="set-meta-row">Basic 7문 · Advanced 3문</div>
+    </div>
+    <span class="set-status status-soon">준비 중</span>
+  </div>
+
+  <div class="set-card locked">
+    <div class="set-num">Set 09</div>
+    <div class="set-title">Practice Set 9</div>
+    <div class="set-meta">
+      <div class="set-meta-row">모듈1 8문 + 더미 3문</div>
+      <div class="set-meta-row">Basic 7문 · Advanced 3문</div>
+    </div>
+    <span class="set-status status-soon">준비 중</span>
+  </div>
+
+  <div class="set-card locked">
+    <div class="set-num">Set 10</div>
+    <div class="set-title">Practice Set 10</div>
+    <div class="set-meta">
+      <div class="set-meta-row">모듈1 8문 + 더미 3문</div>
+      <div class="set-meta-row">Basic 7문 · Advanced 3문</div>
+    </div>
+    <span class="set-status status-soon">준비 중</span>
+  </div>
+
+</div>
+
+</body>
+</html>
